@@ -142,5 +142,6 @@ dist
 .svelte-kit
 
 weatherData.json
+.vscode
 
 # End of https://www.toptal.com/developers/gitignore/api/node
