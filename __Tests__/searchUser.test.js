@@ -1,4 +1,4 @@
-const { searchUser } = require("../path/to/controller");
+const { searchUser } = require("../controllers/UsersController");
 const { User } = require("../models/User");
 
 jest.mock("../models/User");

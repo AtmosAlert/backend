@@ -1,27 +1,5 @@
 const data = require('./areaCodes.json');
 
-function decodeSAME(sameCode) {
-    state= null
-    county = null
-
-    const stateFIPS = sameCode.slice(1, 3);
-    const countyFIPS = sameCode.slice(3); 
-    
-    state = data.find(row =>
-        row["State Code (FIPS)"] === stateFIPS &&
-        row["County Code (FIPS)"] === '000' && row["County Subdivision Code (FIPS)"] === '00000' && row["Place Code (FIPS)"] === '00000' && row["Consolidtated City Code (FIPS)"] === '00000'
-    )['Area Name (including legal/statistical area description)'];
-
-    county = data.find(row => row["State Code (FIPS)"] === stateFIPS &&
-        row["County Code (FIPS)"] === countyFIPS && row["County Subdivision Code (FIPS)"] === '00000' && row["Place Code (FIPS)"] === '00000' && row["Consolidtated City Code (FIPS)"] === '00000'
-    )['Area Name (including legal/statistical area description)'];
-
-    return {
-        'State': state,
-        'County': county,
-    };
-    
-}
 
 function encode(state, county) {
     if (!state) {

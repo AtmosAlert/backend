@@ -6,8 +6,11 @@ const userSchema = new Schema(
     email: { type: String, required: true },
     password: { type: String, required: true },
     phone: { type: String, required: true },
-    isProjectOwner: { type: Boolean, required: true },
     profileImage: { type: String },
+    preferences: {
+      region: { type: String, required: true }, // e.g., a region name or identifier
+      severity: { type: String, enum: ["Minor", "Moderate", "Severe", "Extreme"], required: true }, // predefined severity levels
+    },
   },
   { timestamps: true }
 );

@@ -1,4 +1,4 @@
-const { login } = require("../path/to/your/controller");
+const { login } = require(".../controllers/AuthController");
 const { User } = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");

@@ -1,4 +1,4 @@
-const { authenticate } = require("../path/to/authenticate");
+const { authenticate } = require("../middlewares/Authenticate");
 const jwt = require("jsonwebtoken");
 
 jest.mock("jsonwebtoken");

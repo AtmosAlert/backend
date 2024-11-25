@@ -1,4 +1,4 @@
-const { resetPassword } = require("../path/to/controller");
+const { resetPassword } = require("../controllers/UsersController");
 const { User } = require("../models/User");
 const bcrypt = require("bcryptjs");
 
