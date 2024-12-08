@@ -55,4 +55,31 @@ function decode(code) {
     };
 }
 
-module.exports = {encode,decode}
+function filterDuplicates(array, uniqueAttributes) {
+    const seen = new Set();
+    
+    return array.filter((item) => {
+      // Create a unique identifier based on the attributes
+      const key = uniqueAttributes.map(attr => item[attr]).join('|');
+      
+      if (seen.has(key)) {
+        return false; // Duplicate found
+      } else {
+        seen.add(key);
+        return true; // Unique item
+      }
+    });
+  }
+  
+  function isDateInPast(currentDate, givenDateString) {
+    const givenDate = new Date(givenDateString); // Parse the given date
+  
+    if (isNaN(givenDate.getTime())) {
+      throw new Error("Invalid date string");
+    }
+  
+    return givenDate < currentDate; // Return true if the given date is in the past
+  }
+  
+
+module.exports = {encode,decode,filterDuplicates,isDateInPast}

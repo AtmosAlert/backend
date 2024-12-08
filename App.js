@@ -7,14 +7,14 @@ const authenticate = require("./middlewares/Authenticate");
 
 const AuthRoute = require("./routes/auth");
 const UsersRoute = require("./routes/users");
-const AlertsRoute = require("./routes/alerts");
+const WeatherRoute = require("./routes/weather");
 
 app.use(cors());
 app.use(express.json());
 
 app.use("/auth", AuthRoute);
 app.use("/api/user", authenticate.authenticate, UsersRoute);
-app.use("/api/alert", authenticate.authenticate, AlertsRoute);
+app.use("/api/weather", authenticate.authenticate, WeatherRoute);
 
 app.get("/verifyToken", authenticate.authenticate, async (req, res) => {
   res.status(200).json({

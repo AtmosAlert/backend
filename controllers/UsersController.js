@@ -15,7 +15,7 @@ const searchUser = async (req, res) => {
       "_id name email phone profileImage "
     );
     if (user.length === 0) {
-      return res.json({ message: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
     return res.status(200).json(user);
   } catch (error) {
@@ -50,30 +50,90 @@ const getMebyId = async (req, res) => {
   }
 };
 
+const getAlertPreferences = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select(
+      "preferences"
+    );
+    if (!user) {
+      return res.status(404).send({ error: "User not found" });
+    }
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(400).send({ message: "Failed to get user", error });
+  }
+};
+
 const updateMeById = async (req, res) => {
-  const { name, email, phone, profileImage } = req.body.data;
   try {
     const newUser = await User.findByIdAndUpdate(
       req.user.id,
       {
-        name: name && name,
-        email: email && email,
-        phone: phone && phone,
-        profileImage: profileImage && profileImage,
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone,
+        profileImage: req.body.profileImage,
+
       },
       { new: true }
     ).select("-password");
+
+    if (!newUser) {
+      throw { message: "User not found",code:404 }
+    }
+
     return res.status(200).json({
       message: "Sucessfuly updated user",
       newUser,
       error: false,
     });
   } catch (error) {
-    return res
-      .status(400)
-      .send({ message: "Failed to update user", error: true, errorMsg: error });
+    const statusCode = error.code || 500;
+    return res.status(statusCode).json({
+      message: error.message || "An unexpected error occurred",})
+    }
+}; 
+
+const setAlertPreferences = async (req, res) => {
+  try {
+    const { state, county, severity } = req.body || {};
+
+    if (!state) {
+      throw {
+        message: "State cannot be empty",
+        code: 400,
+      };
+    }
+
+    if (severity && !["Minor", "Moderate", "Severe", "Extreme"].includes(severity)) {
+      throw {
+        message: "Invalid Severity Level",
+        code: 400,
+      };
+    }
+
+    await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        preferences: {
+          state,
+          county,
+          severity,
+        },
+      },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      message: "Successfully updated alert preferences",
+    });
+  } catch (error) {
+    const statusCode = error.code || 500;
+    return res.status(statusCode).json({
+      message: error.message || "An unexpected error occurred",});
   }
 };
+
 
 const resetPassword = async (req, res) => {
   const { newPassword, currentPassword } = req.body;
@@ -98,12 +158,12 @@ const resetPassword = async (req, res) => {
   } catch (error) {
     if (error === "wrong current") {
       return res.status(400).send({
-        message: "Wrong current",
+        message: "Current password is invalid",
       });
     }
     if (error === "short new") {
       return res.status(400).send({
-        message: "Short new",
+        message: "New password is invalid",
       });
     }
     return res.status(400).send({
@@ -118,4 +178,6 @@ module.exports = {
   updateMeById,
   resetPassword,
   getUserById,
-};
+  setAlertPreferences,
+  getAlertPreferences
+}
